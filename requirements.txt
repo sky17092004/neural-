@@ -1,0 +1,27 @@
+# neural_wrench requirements
+#
+# Install (CUDA 12.1 wheels; drop the index-url for CPU-only):
+#   pip install torch --index-url https://download.pytorch.org/whl/cu121
+#   pip install -r requirements.txt
+#
+# torch >= 2.3 matters: train.py uses the torch.amp.GradScaler("cuda", ...)
+# signature, which replaced torch.cuda.amp.GradScaler in 2.3. On 2.0-2.2 you
+# will get a TypeError on the very first step.
+torch>=2.3
+numpy>=1.24
+pillow>=9.0
+
+# --- optional -------------------------------------------------------------- #
+# Plotting (src/viz.py). Everything else runs without it.
+matplotlib>=3.6
+
+# The DINOv2 backbones are pulled from torch.hub (facebookresearch/dinov2) at
+# first use, which needs network access once; the weights are then cached under
+# ~/.cache/torch/hub. torchvision also provides the resnet18/34 backbones.
+# Neither is needed for --backbone tiny, which is fully offline.
+torchvision>=0.18
+
+# Tests need nothing beyond numpy: both suites run standalone.
+#   python tests/test_core.py
+#   python tests/test_data_numpy.py
+# pytest also works if you prefer it.
